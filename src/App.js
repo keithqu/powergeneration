@@ -1,7 +1,18 @@
+import { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+import axios from 'axios';
+import { defaultURL } from './util/config';
+
+const App = () => {
+  useEffect(() => {
+    (async () => {
+      const res = await axios(`${defaultURL}/api/all`)
+      console.log(res.data)
+    })()
+  }, [])
+
   return (
     <div className="App">
       <header className="App-header">
