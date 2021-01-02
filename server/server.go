@@ -6,8 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	_ "./controllers"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
@@ -100,9 +98,9 @@ func handleRequests() {
 		port = "3001"
 	}
 
-	router.HandleFunc("/api/aggregate/", aggregate.getAggregates).Methods("GET")
-	router.HandleFunc("/api/country/", country.getAllCountries).Methods("GET")
-	router.HandleFunc("/api/country/{code:[a-zA-Z]+}", country.getOneCountry).Methods("GET")
+	router.HandleFunc("/api/aggregate/", controllers.getAggregates).Methods("GET")
+	router.HandleFunc("/api/country/", controllers.getAllCountries).Methods("GET")
+	router.HandleFunc("/api/country/{code:[a-zA-Z]+}", controllers.getOneCountry).Methods("GET")
 
 	spa := spaHandler{staticPath: "build", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)
