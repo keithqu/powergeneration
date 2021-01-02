@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	_ "github.com/keithqu/powergeneration/controllers"
 	"github.com/keithqu/powergeneration/db"
 	"github.com/keithqu/powergeneration/models"
 
@@ -65,9 +64,10 @@ func handleRequests() {
 		port = "3001"
 	}
 
-	router.HandleFunc("/api/aggregate/", controllers.getAggregates).Methods("GET")
-	router.HandleFunc("/api/country/", controllers.getAllCountries).Methods("GET")
-	router.HandleFunc("/api/country/{code:[a-zA-Z]+}", controllers.getOneCountry).Methods("GET")
+	router.HandleFunc("/api/aggregate/", getAggregates).Methods("GET")
+	router.HandleFunc("/api/aggregate/{group}", getAggregatesByGroup).Methods("GET")
+	router.HandleFunc("/api/country/", getAllCountries).Methods("GET")
+	router.HandleFunc("/api/country/{code:[a-zA-Z]+}", getOneCountry).Methods("GET")
 
 	spa := spaHandler{staticPath: "build", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)

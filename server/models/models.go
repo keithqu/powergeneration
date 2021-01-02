@@ -35,3 +35,20 @@ type CountryAggregates struct {
 	CountryLong string  `json:"country_long"`
 	Total       float32 `json:"total"`
 }
+
+// FuelAggregates ... production grouped by fuel type
+type FuelAggregates struct {
+	PrimaryFuel string  `json:"primary_fuel"`
+	Total       float32 `json:"total"`
+}
+
+// CountryFuelAggregates ... production grouped by fuel type per country
+type CountryFuelAggregates struct {
+	Country string `json:"country"`
+	*FuelAggregates
+}
+
+// ErrorMessage ... generic error message type
+type ErrorMessage struct {
+	Error string `json:"error"`
+}

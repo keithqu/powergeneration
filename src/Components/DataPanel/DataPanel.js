@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { StoreContext } from '../../context/Store';
 
 import Aggregates from './Aggregates';
+import Country from './Country';
 
 const panelSelector = state => {
   const { mapSelection, aggregateData } = state;
@@ -9,7 +10,7 @@ const panelSelector = state => {
     case !mapSelection:
       return <Aggregates />
     case !!mapSelection && !!aggregateData.A3Mappings[mapSelection]:
-      return <div>country panel</div>
+      return <Country />
     default:
       return <Aggregates />;
   }

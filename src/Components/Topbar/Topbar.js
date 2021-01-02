@@ -10,7 +10,7 @@ const Topbar = ({ children }) => {
             Global Power Generation
           </NavbarHeading>
           <NavbarDivider />
-          Searchbar here
+          Grayish - low production, Bluish - high production!!!! :)
         </NavbarGroup>
       </Navbar>
       <div className='underwrapper'>
