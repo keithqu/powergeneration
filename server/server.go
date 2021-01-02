@@ -6,12 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
-	// _ "powergeneration/controllers"
-	_ "powergeneration/database"
+	_ "powergeneration/controllers"
+	_ "powergeneration/db"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
-	"github.com/keithqu/powergeneration/server/db"
 
 	"github.com/gorilla/mux"
 )
