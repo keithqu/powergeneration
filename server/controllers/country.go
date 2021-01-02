@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	_ "powergeneration/models"
+
 	"github.com/gorilla/mux"
 )
 

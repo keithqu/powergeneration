@@ -1,4 +1,4 @@
-module github.com/keithqu/powergeneration
+module powergeneration
 
 go 1.15
 
