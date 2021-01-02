@@ -1,35 +1,52 @@
-import { useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useContext, useEffect, useState } from 'react';
+import { StoreContext } from './context/Store';
+
+import DataPanel from './Components/DataPanel/DataPanel';
+import GlobeMap from './Components/Map/GlobeMap';
+import Topbar from './Components/Topbar/Topbar';
+import PowerCard from './Components/UI/PowerCard'
 
 import axios from 'axios';
-import { defaultURL } from './util/config';
 
 const App = () => {
-  useEffect(() => {
-    (async () => {
-      const res = await axios(`${defaultURL}/api/all`)
-      console.log(res.data)
-    })()
-  }, [])
+  const [loading, setLoading] = useState(true);
+  const [state, dispatch] = useContext(StoreContext);
+  const { mapSelection, aggregateData } = state;
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  // populate initial aggregate data
+  useEffect(() => {
+    (async() => {
+      const res = await axios('/api/aggregate/', { method: 'get'});
+      
+      !!res.data && dispatch({
+        type: "SET_AGGREGATE_DATA",
+        payload: res.data
+      })
+
+      !!res.data && setLoading(false)
+    })();
+  }, [dispatch])
+
+  return loading ? (<div>...</div>) : (
+    <Topbar>
+      <div className="row">
+        <div className="column left">
+          <PowerCard
+            title="Selection Map"
+            content="hello"
+          >
+            <GlobeMap />
+          </PowerCard>
+        </div>
+        <div className="column right">
+          <PowerCard
+            title={!mapSelection ? 'Total Production by Country (GWh)' : aggregateData.A3Mappings[mapSelection] ? `${aggregateData.A3Mappings[mapSelection]} Production` : 'No data for this country'}
+          >
+            <DataPanel />
+          </PowerCard>
+        </div>
+      </div>
+    </Topbar>
   );
 }
 
