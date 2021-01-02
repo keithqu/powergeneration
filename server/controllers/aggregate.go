@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	DB "powergeneration/db"
-	"powergeneration/models"
+	"github.com/keithqu/powergeneration/db"
+	"github.com/keithqu/powergeneration/models"
 )
 
 func getAggregates(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +14,7 @@ func getAggregates(w http.ResponseWriter, r *http.Request) {
 
 	countryAggregates := []models.CountryAggregates{}
 
-	DB.Raw(`select country, country_long, sum(gwh) as total from (
+	db.DB.Raw(`select country, country_long, sum(gwh) as total from (
 		select country, country_long,
 		CASE when generation_gwh2017=0 OR generation_gwh2017='' or generation_gwh2017 is null THEN estimated_generation_gwh
 			 else generation_gwh2017

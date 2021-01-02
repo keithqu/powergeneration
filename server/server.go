@@ -6,8 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	_ "powergeneration/controllers"
-	_ "powergeneration/db"
+	_ "github.com/keithqu/powergeneration/controllers"
+	"github.com/keithqu/powergeneration/db"
+	"github.com/keithqu/powergeneration/models"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
@@ -91,7 +92,7 @@ func main() {
 	}
 	defer db.Close()
 
-	db.AutoMigrate(&GlobalPowerPlants{})
+	db.DB.AutoMigrate(&models.GlobalPowerPlants{})
 
 	handleRequests()
 }
