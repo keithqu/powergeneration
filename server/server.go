@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	// _ "powergeneration/controllers"
-	_ "powergeneration/db"
+	_ "powergeneration/database"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
@@ -92,7 +92,7 @@ func main() {
 	}
 	defer db.Close()
 
-	// db.AutoMigrate(&GlobalPowerPlants{})
+	db.AutoMigrate(&GlobalPowerPlants{})
 
 	handleRequests()
 }

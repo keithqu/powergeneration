@@ -3,6 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+
+	_ "powergeneration/models"
 )
 
 func getAggregates(w http.ResponseWriter, r *http.Request) {

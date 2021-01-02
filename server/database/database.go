@@ -1,7 +1,6 @@
-package db
+package database
 
 import (
-	"log"
 	"os"
 
 	_ "powergeneration/models"
@@ -23,12 +22,8 @@ func Open() error {
 	db, err = gorm.Open("mysql", mysqluser+":"+mysqlpwd+"@tcp("+mysqlhost+":"+mysqlport+")/"+mysqldb)
 
 	if err != nil {
-		log.Println("MySQL connection failed")
-	} else {
-		log.Println("Connected to MySQL server")
+		return err
 	}
-
-	db.AutoMigrate(&GlobalPowerPlants{})
 }
 
 // Close closes database
