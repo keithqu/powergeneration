@@ -27,7 +27,7 @@ const ToastBox = () => {
   }, [dispatch, toasts])
 
   return (
-    <Toaster position={Position.BOTTOM} ref={refHandlers.toaster} />
+    <Toaster position={Position.BOTTOM_RIGHT} ref={refHandlers.toaster} />
   )
 }
 

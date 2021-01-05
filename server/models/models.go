@@ -48,7 +48,14 @@ type CountryFuelAggregates struct {
 	*FuelAggregates
 }
 
+// ComparisonAggregates ... for country comparisons
+type ComparisonAggregates struct {
+	*CountryFuelAggregates
+	CapacityTotal float32 `json:"capacity_total"`
+}
+
 // ErrorMessage ... generic error message type
 type ErrorMessage struct {
-	Error string `json:"error"`
+	Error   string      `json:"error"`
+	Details interface{} `json:"details"`
 }

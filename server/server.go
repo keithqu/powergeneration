@@ -20,18 +20,6 @@ type spaHandler struct {
 	indexPath  string
 }
 
-// var db *gorm.DB
-
-// var dataset string = "e0f47930-c021-4632-8b4d-87cea97d85b5"
-// var apikey string = os.Getenv("APIKEY")
-// var organizationid string = os.Getenv("ORGANIZATIONID")
-// var baseurl string = "https://api.namara.io/v0/data_sets/" + dataset + "/data/en-0?geometry_format=wkt&api_key=" + apikey + "&organization_id=" + organizationid
-// var mysqlhost = os.Getenv("MYSQL_HOST")
-// var mysqlport = os.Getenv("MYSQL_PORT")
-// var mysqluser = os.Getenv("MYSQL_USER")
-// var mysqlpwd = os.Getenv("MYSQL_PASSWORD")
-// var mysqldb = os.Getenv("MYSQL_DB")
-
 // Function for serving the React build SPA
 func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path, err := filepath.Abs(r.URL.Path)
@@ -64,10 +52,11 @@ func handleRequests() {
 		port = "3001"
 	}
 
-	router.HandleFunc("/api/aggregate/", getAggregates).Methods("GET")
-	router.HandleFunc("/api/aggregate/{group}", getAggregatesByGroup).Methods("GET")
-	router.HandleFunc("/api/country/", getAllCountries).Methods("GET")
-	router.HandleFunc("/api/country/{code:[a-zA-Z]+}", getOneCountry).Methods("GET")
+	router.HandleFunc("/api/aggregate/", handlers.getAggregates).Methods("GET")
+	router.HandleFunc("/api/aggregate/{group}", handlers.getAggregatesByGroup).Methods("GET")
+	router.HandleFunc("/api/country/", handlers.getAllCountries).Methods("GET")
+	router.HandleFunc("/api/country/{code:[a-zA-Z]+}", handlers.getOneCountry).Methods("GET")
+	router.HandleFunc("/api/comparison/{code1:[a-zA-Z]+}/{code2:[a-zA-Z]+}", handlers.compareCountries).Methods("GET")
 
 	spa := spaHandler{staticPath: "build", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)
@@ -82,8 +71,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-
-	// db, err = gorm.Open("mysql", mysqluser+":"+mysqlpwd+"@tcp("+mysqlhost+":"+mysqlport+")/"+mysqldb)
 
 	if err := db.Open(); err != nil {
 		log.Println("Connected to MySQL server")

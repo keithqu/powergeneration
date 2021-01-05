@@ -23,6 +23,14 @@ body {
   background: #68a6d5; 
 }
 
+.bp3-tab-panel {
+  margin-top: 5px;
+}
+
+.leaflet-container {
+  z-index: 1;
+}
+
 .wrapper {
   position: absolute;
   top: 0;
@@ -59,6 +67,24 @@ body {
   height: 100%;
 }
 
+.powercard.map.comparisonDisabled {
+  height: calc(100% - 40px);
+}
+
+.powercard.comparison.comparisonDisabled {
+  margin-top: 10px;
+  height: 0px;
+}
+
+.powercard.map.comparisonEnabled {
+  height: calc(100% - 350px);
+}
+
+.powercard.comparison.comparisonEnabled {
+  margin-top: 10px;
+  height: 340px;
+}
+
 .powercard .content {
   box-shadow: inset 1px 2px 1px rgba(100,100,100,0.8);
   padding: 0;
@@ -70,6 +96,7 @@ body {
   background: #eeeeee80;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 div.note {
@@ -104,4 +131,92 @@ div.note {
 .aggregate-list span.total {
   float: right;
   margin-right: 30px;
+}
+
+.map-legend {
+  position: relative;
+  background: #00000088;
+  color: #ffffff;
+  font-weight: 500;
+  padding: 5px;
+  left: 15px;
+  z-index: 9999;
+}
+
+.map-legend.aggregate {
+  width: 250px;
+  bottom: 100px;
+}
+
+.map-legend.country {
+  width: 100px;
+  bottom: 175px;
+}
+
+.map-legend .legend-gradient {
+  margin-top: 5px;
+  background-image: linear-gradient(to right, #e5f5e0, #003700);
+  height: 25px;
+  width: 100%;
+}
+
+.map-legend .legend-gradient-labels {
+  column-count: 2;
+}
+
+.map-legend .legend-gradient-labels .right {
+  float: right;
+}
+
+.map-legend .legend-fuel {
+  display: flex;
+}
+
+.map-legend .legend-fuel-bg {
+  margin: 3px;
+  width: 12px;
+  height: 12px;
+  outline: 1;
+}
+
+.map-legend .legend-fuel-bg.coal {
+  background: #000000CC;
+}
+.map-legend .legend-fuel-bg.hydro {
+  background: #6495EDCC;
+}
+.map-legend .legend-fuel-bg.nuclear {
+  background: #FFD700CC;
+}
+.map-legend .legend-fuel-bg.gas {
+  background: #800000CC;
+}
+.map-legend .legend-fuel-bg.oil {
+  background: #708090CC;
+}
+.map-legend .legend-fuel-bg.solar {
+  background: #FF8C00CC;
+}
+.map-legend .legend-fuel-bg.wind {
+  background: #008080CC;
+}
+.map-legend .legend-fuel-bg.other {
+  background: #D2B48CCC;
+}
+
+.leaflet-popup-content-wrapper {
+  background: none;
+  box-shadow: none;
+}
+
+.map-popup-card {
+  width: 300px;
+  padding: 5px;
+  z-index: 9999
+}
+
+.bp3-transition-container .bp3-select-popover .bp3-menu{
+  max-height: 300px;
+  overflow-y: auto;
+  width: 250px;
 }

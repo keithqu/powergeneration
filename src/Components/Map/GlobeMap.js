@@ -1,142 +1,148 @@
-import { useContext, useEffect, useState } from 'react';
+import { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { StoreContext } from '../../context/Store';
 
 import { scaleLinear } from "d3-scale";
-import {
-  ComposableMap,
-  ZoomableGroup,
-  Geographies,
-  Geography,
-  Marker
-} from "react-simple-maps"
-import { countrypoly } from '../../util/countrypoly';
+import { Circle, GeoJSON, MapContainer, Popup, TileLayer } from 'react-leaflet'
+
+import Legend from './Legend';
+import PowerPlantPopover from './PowerPlantPopover';
+
+import { countrypoly } from '../../util/geojson';
 
 const mapStyles = {
   width: "100%",
-  margin: 0,
   display: "block",
   height: "100%",
-  padding: '1px'
 }
 
 const colorScale = scaleLinear()
-  .domain([0, 8])
-  .range(["#bbbbbb", "#68a6d5"]);
+  .domain([1, 40])
+  .range(["#e5f5e0", "#31a354"]); 
+  // hot pink for some reason          
+  // .range(['#ff69b4','#ff1493'])
+
+const MapPosition = ({ map }) => {
+  const [state, ] = useContext(StoreContext);
+  const { centroids, mapSelection } = state;
+
+  // forcePosition only changes when the mapselection changes and only useeffect ensures that
+  // the map only focuses and zooms when there's an actual country selected
+  const forcePosition = useMemo(() => centroids[mapSelection], [centroids,mapSelection]);
+
+  useEffect(() => {
+    const currentZoom = map.getZoom();
+    mapSelection && forcePosition && map.setView([forcePosition[1],forcePosition[0]], currentZoom > 5 ? currentZoom : 5);
+    !mapSelection && !forcePosition && map.setView([0,0], 3);
+  } ,[forcePosition,map,mapSelection]);
+
+  return (<></>);
+}
 
 const GlobeMap = () => {
-  const [position, setPosition] = useState({
-    coordinates: [0,0],
-    zoom: 1
-  })
+  const [map, setMap] = useState(null);
   const [state, dispatch] = useContext(StoreContext);
-  const { aggregateData, centroids, mapSelection, countryData } = state;
+  const { aggregateData, countryData, mapSelection } = state;
 
-  // Multiple ways to change mapSelection so better off as a listener
-  useEffect(() => {
-    mapSelection in aggregateData.A3Mappings && setPosition({
-      coordinates: centroids[mapSelection],
-      zoom: position.zoom > 2.5 ? position.zoom : 2.5
-    })
-  } ,[mapSelection,aggregateData,centroids,position])
-
-  const handleMoveEnd = position => setPosition(position)
-
-  const handleClick = geo => {
+  const handleClick = useCallback(e => {
     dispatch({
       type: "SET_MAP_SELECTION",
-      payload: geo.properties.ISO_A3
+      payload: e.sourceTarget.feature.properties.ISO_A3
     });
-  }
+  }, [dispatch]);
 
-  const handleClickMarker = data => {
-    console.log(data)
-  }
-
+  // scaling radius by the production value works pretty well
   const handleCircleRadius = production => {
     switch (true) {
-      case production >= 50000:
-        return 5.0;
-      case production >= 40000:
-        return 4.0;
-      case production >= 30000:
-        return 3.0;
-      case production >= 20000:
-        return 2.0;
-      case production >= 10000:
-        return 1.0;
-      case production >= 5000:
-        return 0.5;
+      case production > 2000:
+        return production * 1.5;
       default:
-        return 0.4;
+        return 3000;
     }
   }
 
-  return (
-    <ComposableMap
-      width={500}
-      height={500}
-      projection="geoMercator"
-      projectionConfig={{ scale: 175 }}
+  const handlePlantColor = fuel => {
+    switch (fuel.toLowerCase()) {
+      case 'coal':
+        return '#000000EE';
+      case 'hydro':
+        return '#6495EDEE';
+      case 'nuclear':
+        return '#FFD700EE';
+      case 'gas':
+        return '#800000EE';
+      case 'oil':
+        return '#708090EE';
+      case 'soloar':
+        return '#FF8C00EE';
+      case 'wind':
+        return '#008080EE';
+      default:
+        return '#D2B48CEE'
+    }
+  }
+
+  const showMap = useMemo(() => (
+    <MapContainer
+      center={[0,0]}
+      zoom={3}
+      scrollWheelZoom={true}
       style={mapStyles}
+      whenCreated={setMap}
+      worldCopyJump={true}
     >
-      <ZoomableGroup center={position.coordinates} zoom={position.zoom} onMoveEnd={handleMoveEnd}>
-        <Geographies geography={countrypoly}>
-          {
-            geos => geos.geographies.map((geo,i) => {
-              return <Geography
-                key={`${geo.id}-${i}`}
-                geography={geo}
-                onClick={() => handleClick(geo)}
-                style={{
-                  pressed: {
-                    outline: 'none'
-                  },
-                  default: {
-                    outline: 'none',
-                    fill: state.mapSelection === geo.properties.ISO_A3 ? '#ff0000aa' : geo.properties.ISO_A3 in aggregateData.A3Mappings ? colorScale(aggregateData.A3Mappings[geo.properties.ISO_A3]?.total/5621544*100) : "#eeeeee",
-                  },
-                  hover: {
-                    outline: 'none',
-                    fill:'#ff0000cc'
-                  },
-                }}
-              />
-              })
-          }
-        </Geographies>
+      {
+        countrypoly.features.map(f => (
+          // using the magic of key changes to update when needed...
+          <GeoJSON
+            key={`${f.properties.ISO_A3}-${f.properties.NAME_LONG}-geojson-map-${mapSelection === f.properties.ISO_A3}`}
+            data={f}
+            style={{
+              fillColor: mapSelection === f.properties.ISO_A3 ? '#ff000022' : f.properties.ISO_A3 in aggregateData.A3Mappings ? colorScale(aggregateData.A3Mappings[f.properties.ISO_A3]?.total/5621544*100) : '#eeeeee',
+              fillOpacity: 0.5,
+              stroke: false
+              // stroke: mapSelection === f.properties.ISO_A3 ? true : false,
+              // color: '#ff0000',
+              // opacity: 0.5,
+            }}
+            eventHandlers={{
+              click: e => handleClick(e)
+            }}
+          />
+        ))
+      }
+      <TileLayer
+        // noWrap={true}
+        // bounds={[[-90,-180],[90,180]]}
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
         {
-          mapSelection in countryData && countryData[mapSelection].map(d => (
-            <Marker
+          mapSelection in countryData && countryData[mapSelection].power.map(d => (
+            <Circle
               key={`${d.country}-${d.id}`}
-              coordinates={[d.longitude,d.latitude]}
+              center={[d.latitude,d.longitude]}
+              radius={handleCircleRadius(Math.max(d.generation_gwh_2017,d.estimated_generation_gwh))}
+              pathOptions={{
+                fillColor: handlePlantColor(d.primary_fuel),
+                stroke: false,
+                fillOpacity: 0.6
+              }}
             >
-              <circle
-                r={handleCircleRadius(Math.max(d.generation_gwh_2017,d.estimated_generation_gwh))}
-                fill="#36529477"
-                onClick={() => handleClickMarker(d)}
-              />
-            </Marker>
+              <Popup>
+                <PowerPlantPopover data={d} />
+              </Popup>
+            </Circle>
           ))
         }
-        {/* {
-          countrypoly.objects.ne_110m_admin_0_countries.geometries.map((geo,i) => {
-            // console.log(geo)
-            return <Marker
-              key={`${geo.id}-${i}-marker`}
-              coordinates={polylabel(geo.geometry.coordinates, 1.0)}
-            >
-              <text textAnchor="middle" fill="#ff0000" style={{
-                fontFamily: "Raleway",
-                fontSize: "0.4em",
-                zIndex: 9999
-              }} >
-                { geo.properties.FORMAL_EN }
-              </text>
-            </Marker>
-          })
-        } */}
-      </ZoomableGroup>
-    </ComposableMap>
+    </MapContainer>
+  ), [mapSelection,aggregateData,handleClick,countryData])
+
+  return (
+    <Fragment>
+      { map ? <MapPosition map={map} /> : null }
+      { showMap }
+      <Legend />
+    </Fragment>
   )
 }
 
