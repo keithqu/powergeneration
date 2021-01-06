@@ -10,7 +10,9 @@
 
 # production
 /build
-server/ruild
+server/build
+server/server
+server/gin-bin
 
 # misc
 .DS_Store
