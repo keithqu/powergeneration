@@ -9,7 +9,8 @@ import (
 	"github.com/keithqu/powergeneration/models"
 )
 
-func getAggregates(w http.ResponseWriter, r *http.Request) {
+// GetAggregates ... total generation data by country in descending order
+func GetAggregates(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
@@ -27,7 +28,8 @@ func getAggregates(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(countryAggregates)
 }
 
-func getAggregatesByGroup(w http.ResponseWriter, r *http.Request) {
+// GetAggregatesByGroup ... Aggregated fuel data by fuel type or by both country and fuel type (/fuel or /countryfuel)
+func GetAggregatesByGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
@@ -68,7 +70,8 @@ func getAggregatesByGroup(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAllCountries(w http.ResponseWriter, r *http.Request) {
+// GetAllCountries ... gets the first three rows of data, not that useful
+func GetAllCountries(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
@@ -78,7 +81,8 @@ func getAllCountries(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(powerData)
 }
 
-func getOneCountry(w http.ResponseWriter, r *http.Request) {
+// GetOneCountry ... gets aggregated data for one country grouped by fuel type
+func GetOneCountry(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 

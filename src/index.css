@@ -56,7 +56,7 @@ body {
 }
 
 .column.left {
-  width: 100%;
+  width: calc(100% - 1px);
 }
 
 .column.right {

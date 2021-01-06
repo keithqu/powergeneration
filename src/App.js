@@ -78,9 +78,25 @@ const App = () => {
             mapSelection={mapSelection}
             cardType="comparison"
             comparisonEnabled={!!comparison[0] && !!comparison[1] ? true : false}
-            title={!!comparison[0] && !!comparison[1] ? `Comparison: ${aggregateData.A3Mappings[comparison[0]].long} vs. ${aggregateData.A3Mappings[comparison[1]].long}`: "Comparison: Select Two Countries to Compare"}
+            title={
+              !!comparison[0] && !!comparison[1] ? (
+                <>
+                  Comparison:
+                  {' '}
+                  <ReactCountryFlag svg countryCode={getCountryISO2(comparison[0]) || 'XK'} />
+                  {' '}
+                  { aggregateData.A3Mappings[comparison[0]].long } vs.
+                  {' '}
+                  <ReactCountryFlag svg countryCode={getCountryISO2(comparison[1]) || 'XK'} />
+                  {' '}
+                  {aggregateData.A3Mappings[comparison[1]].long}
+                </>) : "Comparison: Select Two Countries to Compare"
+              }
           >
-            <ComparisonPanel />
+            <ComparisonPanel
+              country1={!!comparison[0] && !!comparison[1] && comparison[0]}
+              country2={!!comparison[0] && !!comparison[1] && comparison[1]}
+            />
           </PowerCard>
         </div>
         <div className="column right">

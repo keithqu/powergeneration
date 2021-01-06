@@ -34,7 +34,7 @@ const colorSwitcher = fuel => {
       return '#80000055';
     case 'oil':
       return '#70809055';
-    case 'soloar':
+    case 'solar':
       return '#FF8C0055';
     case 'wind':
       return '#00808055';

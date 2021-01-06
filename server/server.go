@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/keithqu/powergeneration/db"
+	"github.com/keithqu/powergeneration/handlers"
 	"github.com/keithqu/powergeneration/models"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -52,11 +53,11 @@ func handleRequests() {
 		port = "3001"
 	}
 
-	router.HandleFunc("/api/aggregate/", handlers.getAggregates).Methods("GET")
-	router.HandleFunc("/api/aggregate/{group}", handlers.getAggregatesByGroup).Methods("GET")
-	router.HandleFunc("/api/country/", handlers.getAllCountries).Methods("GET")
-	router.HandleFunc("/api/country/{code:[a-zA-Z]+}", handlers.getOneCountry).Methods("GET")
-	router.HandleFunc("/api/comparison/{code1:[a-zA-Z]+}/{code2:[a-zA-Z]+}", handlers.compareCountries).Methods("GET")
+	router.HandleFunc("/api/aggregate/", handlers.GetAggregates).Methods("GET")
+	router.HandleFunc("/api/aggregate/{group}", handlers.GetAggregatesByGroup).Methods("GET")
+	router.HandleFunc("/api/country/", handlers.GetAllCountries).Methods("GET")
+	router.HandleFunc("/api/country/{code:[a-zA-Z]+}", handlers.GetOneCountry).Methods("GET")
+	router.HandleFunc("/api/comparison/{code1:[a-zA-Z]+}/{code2:[a-zA-Z]+}", handlers.GetCompareCountries).Methods("GET")
 
 	spa := spaHandler{staticPath: "build", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)

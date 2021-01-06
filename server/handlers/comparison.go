@@ -24,7 +24,8 @@ func filterCountryCode(code string, arr []models.ComparisonAggregates) (out []mo
 	return
 }
 
-func compareCountries(w http.ResponseWriter, r *http.Request) {
+// GetCompareCountries ... gets aggregates by fuel type for 2 countries
+func GetCompareCountries(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
